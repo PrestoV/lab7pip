@@ -1,9 +1,8 @@
-<%@ page import="java.util.ArrayList,com.presto.Point" %>
+<%@ page import="java.util.ArrayList,com.presto.lab7.Point" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<%! private ArrayList<Point> points; %>
 <%
-  points = (ArrayList<Point>) application.getAttribute("checkedPoints");
+  ArrayList<Point> points = (ArrayList<Point>) application.getAttribute("checkedPoints");
 %>
 
 <html>
@@ -16,54 +15,37 @@
   <script type="text/javascript" src="${pageContext.request.contextPath}/pages/scripts.js"></script>
 
   <script type="text/javascript">
-      function pointDraw(x, y, r, inArea)
-      {
-          if(x === null || y === null || r === null)
+      function pointDraw(x, y, r, inArea) {
+          if (x === null || y === null || r === null)
               return;
 
           var rd = (+r) / 160;
           var canvas = document.getElementById("plot");
           var canvasRect = canvas.getBoundingClientRect();
 
-          var xCoord = (x / rd) + canvasRect.width/2;
-          var yCoord = canvasRect.height/2 - (y / rd);
+          var xCoord = (x / rd) + canvasRect.width / 2;
+          var yCoord = canvasRect.height / 2 - (y / rd);
 
-          canvas.getContext("2d").fillStyle= inArea?"#00FF00":"#FF0000";
+          canvas.getContext("2d").fillStyle = inArea ? "#00FF00" : "#FF0000";
           canvas.getContext("2d").fillRect(xCoord, yCoord, 3, 3);
       }
 
-      function plotDraw()
-      {
+      function plotDraw() {
           var canvasContext = document.getElementById("plot").getContext("2d");
 
           var image = new Image();
           image.src = "resources/area.png";
-          image.onload = function ()
-          {
+          image.onload = function () {
               canvasContext.drawImage(image, 0, 0);
-
-               <% out.println(points!=null?"alert(\"nonull\");":"alert(\"null\");"); %>
-              <%
-
-  if(points != null)
-  {
-    for(int i = points.size() - 1; i >= 0; i--)
-      out.println("<tr><td>" + points.get(i).getX() +
-              "</td><td>" + points.get(i).getY() +
-              "</td><td>" + points.get(i).getR() +
-              "</td><td>" + (points.get(i).isInArea()?"да":"нет") + "</td></tr>");
-  }
-  %>
           }
       }
   </script>
-
 
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/style.css">
 
 </head>
 
-<body  onload="plotDraw();">
+<body onload="plotDraw();">
 
 <header class="header-area">
   <h1 align="center">
@@ -74,9 +56,8 @@
   </h4>
 </header>
 
-<div id="main-form" align="center">
-<table>
-    <tr>
+<table align="center">
+  <tr>
     <td rowspan="3">
       <canvas id="plot" height="440px" width="440px" onclick="plotClick(event)"></canvas>
     </td>
@@ -160,13 +141,12 @@
 
             <tbody id="results">
             <%
-              if(points != null)
-              {
-                for(int i = points.size() - 1; i >= 0; i--)
+              if (points != null) {
+                for (int i = points.size() - 1; i >= 0; i--)
                   out.println("<tr><td>" + points.get(i).getX() +
                           "</td><td>" + points.get(i).getY() +
                           "</td><td>" + points.get(i).getR() +
-                          "</td><td>" + (points.get(i).isInArea()?"да":"нет") + "</td></tr>");
+                          "</td><td>" + (points.get(i).getCheckResult()) + "</td></tr>");
               }
             %>
             </tbody>
@@ -180,7 +160,6 @@
 
 
 </table>
-</div>
 
 </body>
 

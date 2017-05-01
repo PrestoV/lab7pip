@@ -1,4 +1,4 @@
-import com.presto.Point;
+import com.presto.lab7.Point;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,25 +8,28 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
+
 @WebServlet(name = "AreaCheckServlet", urlPatterns = "/check")
-public class AreaCheckServlet extends HttpServlet
-{
+public class AreaCheckServlet extends HttpServlet {
+    public final static String POINTS_ATTRIBUTE = "checkedPoints";
+    public final static String X_PARAM = "x";
+    public final static String Y_PARAM = "y";
+    public final static String R_PARAM = "r";
+    public final static String IN_AREA = "да";
+    public final static String NOT_IN_AREA = "нет";
+    public final static String INCORRECT_PARAMS = "Неверные параметры!";
+
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         double x, y, r;
-        String resRow;
 
-        //res.setContentType("text/html;charset=UTF-8");
+        String xParam = req.getParameter(X_PARAM);
+        String yParam = req.getParameter(Y_PARAM);
+        String rParam = req.getParameter(R_PARAM);
+        String checkResult;
 
-        String xParam = req.getParameter("x");
-        String yParam = req.getParameter("y");
-        String rParam = req.getParameter("r");
-        boolean inArea;
-
-        try
-        {
+        try {
             x = Double.parseDouble( strip(xParam) );
             y = Double.parseDouble( strip(yParam) );
             r = Double.parseDouble( strip(rParam) );
@@ -36,86 +39,32 @@ public class AreaCheckServlet extends HttpServlet
                 || r < 1 || r > 3)
                 throw new NumberFormatException();
 
-            inArea = pointCheck(x, y, r);
+            checkResult = pointCheck(x, y, r) ? IN_AREA : NOT_IN_AREA;
 
-            ArrayList<Point> points = (ArrayList<Point>) getServletContext().getAttribute("checkedPoints");
-
-            if(points == null)
-                points = new ArrayList<>();
-
-            points.add( new Point(xParam, yParam, rParam, inArea) );
-
-            getServletContext().setAttribute("checkedPoints", points);
-
-            /*
-            resRow = "<tr><td>" + xParam +
-                    "</td><td>" + yParam +
-                    "</td><td>" + rParam +
-                    "</td><td>" + (inArea?"да":"нет") + "</td></tr>";
-                    */
-        }
-        catch(NumberFormatException|NullPointerException e)
-        {
-            /*
-            resRow = "<tr><td>" + xParam +
-                "</td><td>" + yParam +
-                "</td><td>" + rParam +
-                "</td><td>" + "Incorrect parameters!" + "</td></tr>"; */
+        } catch(NumberFormatException|NullPointerException e) {
+            checkResult = INCORRECT_PARAMS;
         }
 
-/*
-        PrintWriter out = res.getWriter();
-        out.println("<div id=\"result-card\" style=\"width: 75%\">" +
-                        "<div id=\"result-title\">" +
-                            "Результат проверки" +
-                        "</div>" +
-                        "<div id=\"scroll-div\">" +
-                            "<table id=\"result-table\">" +
-                                "<thead>" +
-                                    "<tr>" +
-                                        "<th width=\"7%\">x</th>" +
-                                        "<th width=\"7%\">y</th>" +
-                                        "<th width=\"7%\">r</th>" +
-                                        "<th width=\"25%\">принадлежит области</th>" +
-                                    "</tr>" +
-                                "</thead>" +
-                                "<tbody id=\"results\">" + resRow +
-                                "</tbody>" +
-                            "</table>" +
-                        "</div>" +
-                "</div>" +
-                "<input type=\"submit\" name=\"check\" style=\"width: 25%\" " +
-                "onclick=\"location.href='/lab7Pip/app'\" value=\"Новый запрос\">"
-        );
-        */
+        ArrayList<Point> points = (ArrayList<Point>) getServletContext()
+                .getAttribute(POINTS_ATTRIBUTE);
+        if(points == null)
+            points = new ArrayList<>();
+
+        points.add( new Point(xParam, yParam, rParam, checkResult) );
+        getServletContext().setAttribute(POINTS_ATTRIBUTE, points);
 
         req.getRequestDispatcher("/pages/index.jsp").forward(req, res);
     }
 
-    private String strip(String numStr)
-    {
+    private String strip(String numStr) {
         if(numStr == null)
             return null;
 
-        int dot_pos = numStr.indexOf(".");
-        if(dot_pos == -1)
-            return numStr;
-
-        int len = numStr.length() - dot_pos - 2;
-        dot_pos++;
-
-        while (len-- > 0 && numStr.charAt(dot_pos + 1) == '0')
-        {
-            numStr = numStr.replaceFirst(".0", ".");
-        }
-
-        return numStr;
+        return numStr.replaceFirst("[.]00+", ".0");
     }
 
-    private boolean pointCheck(double x, double y, double r)
-    {
-        if(x > 0)
-        {
+    private boolean pointCheck(double x, double y, double r) {
+        if(x > 0) {
             if(y > 0)
                 return checkFirstRegion(x, y, r);
             else if(y < 0)
@@ -123,8 +72,7 @@ public class AreaCheckServlet extends HttpServlet
             else
                 return checkFirstRegion(x, y, r) || checkFourthRegion(x, y, r);
         }
-        else if (x < 0)
-        {
+        else if (x < 0) {
             if(y > 0)
                 return checkSecondRegion(x, y, r);
             else if(y < 0)
@@ -132,8 +80,7 @@ public class AreaCheckServlet extends HttpServlet
             else
                 return checkSecondRegion(x, y, r) || checkThirdRegion(x, y, r);
         }
-        else
-        {
+        else {
             if(y > 0)
                 return checkFirstRegion(x, y, r) || checkSecondRegion(x, y, r);
             else if(y < 0)
@@ -144,25 +91,21 @@ public class AreaCheckServlet extends HttpServlet
         }
     }
 
-    private boolean checkFirstRegion(double x, double y, double r)
-    {
+    private boolean checkFirstRegion(double x, double y, double r) {
         return false;
     }
 
-    private boolean checkSecondRegion(double x, double y, double r)
-    {
+    private boolean checkSecondRegion(double x, double y, double r) {
         return x <= 0 && y >= 0
                 && x >= -r && y <= r;
     }
 
-    private boolean checkThirdRegion(double x, double y, double r)
-    {
+    private boolean checkThirdRegion(double x, double y, double r) {
         return x <= 0 && y <= 0
                 && x >= -r && y >= (-x - r);
     }
 
-    private boolean checkFourthRegion(double x, double y, double r)
-    {
+    private boolean checkFourthRegion(double x, double y, double r) {
         return x >= 0 && y <= 0
                 && (x*x + y*y <= r*r/4);
     }
