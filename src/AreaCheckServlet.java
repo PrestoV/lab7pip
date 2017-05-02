@@ -15,9 +15,6 @@ public class AreaCheckServlet extends HttpServlet {
     public final static String X_PARAM = "x";
     public final static String Y_PARAM = "y";
     public final static String R_PARAM = "r";
-    public final static String IN_AREA = "да";
-    public final static String NOT_IN_AREA = "нет";
-    public final static String INCORRECT_PARAMS = "Неверные параметры!";
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res)
@@ -27,7 +24,7 @@ public class AreaCheckServlet extends HttpServlet {
         String xParam = req.getParameter(X_PARAM);
         String yParam = req.getParameter(Y_PARAM);
         String rParam = req.getParameter(R_PARAM);
-        String checkResult;
+        Boolean checkResult;
 
         try {
             x = Double.parseDouble( strip(xParam) );
@@ -39,10 +36,10 @@ public class AreaCheckServlet extends HttpServlet {
                 || r < 1 || r > 3)
                 throw new NumberFormatException();
 
-            checkResult = pointCheck(x, y, r) ? IN_AREA : NOT_IN_AREA;
+            checkResult = pointCheck(x, y, r);
 
         } catch(NumberFormatException|NullPointerException e) {
-            checkResult = INCORRECT_PARAMS;
+            checkResult = null;
         }
 
         ArrayList<Point> points = (ArrayList<Point>) getServletContext()

@@ -13,46 +13,29 @@
   <title>Параметризированная область</title>
 
   <script type="text/javascript" src="${pageContext.request.contextPath}/pages/scripts.js"></script>
-
-  <script type="text/javascript">
-      function pointDraw(x, y, r, inArea) {
-          if (x === null || y === null || r === null)
-              return;
-
-          var rd = (+r) / 160;
-          var canvas = document.getElementById("plot");
-          var canvasRect = canvas.getBoundingClientRect();
-
-          var xCoord = (x / rd) + canvasRect.width / 2;
-          var yCoord = canvasRect.height / 2 - (y / rd);
-
-          canvas.getContext("2d").fillStyle = inArea ? "#00FF00" : "#FF0000";
-          canvas.getContext("2d").fillRect(xCoord, yCoord, 3, 3);
-      }
-
-      function plotDraw() {
-          var canvasContext = document.getElementById("plot").getContext("2d");
-
-          var image = new Image();
-          image.src = "resources/area.png";
-          image.onload = function () {
-              canvasContext.drawImage(image, 0, 0);
-          }
-      }
-  </script>
-
   <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/style.css">
 
 </head>
 
-<body onload="plotDraw();">
+<body onload="<%
+              if (points != null) {
+                for(Point point : points){
+                  out.print("points.push(new Point("
+                  + point.getX() + ","
+                  + point.getY() + ","
+                  + point.getR() + ","
+                  + point.getCheckResult() +"));");
+                }
+               out.print("selectR('" + "r" + points.get(points.size()-1).getR() + "');"); //TODO: REMOVE IT!!!
+              }
+            %>plotDraw();">
 
 <header class="header-area">
   <h1 align="center">
     Параметризированная область
   </h1>
   <h4 align="center">
-    Постовалов Роман Дмитриевич P3202 №4041
+    Постовалов Роман Дмитриевич P3202 №41200
   </h4>
 </header>
 
@@ -98,16 +81,14 @@
         <legend>Параметр</legend>
 
         <div class="value">
-
           <label>R
             <label id="error-r" class="error"></label>
           </label>
-          <input type="button" name="value-r" id="r-1" onClick="selectR(this.id)" value="1">
-          <input type="button" name="value-r" id="r-2" onClick="selectR(this.id)" value="1.5">
-          <input type="button" name="value-r" id="r-3" onClick="selectR(this.id)" value="2">
-          <input type="button" name="value-r" id="r-4" onClick="selectR(this.id)" value="2.5">
-          <input type="button" name="value-r" id="r-5" onClick="selectR(this.id)" value="3">
-
+          <input type="button" name="value-r" id="r1" onClick="selectR(this.id)" value="1">
+          <input type="button" name="value-r" id="r1.5" onClick="selectR(this.id)" value="1.5">
+          <input type="button" name="value-r" id="r2" onClick="selectR(this.id)" value="2">
+          <input type="button" name="value-r" id="r2.5" onClick="selectR(this.id)" value="2.5">
+          <input type="button" name="value-r" id="r3" onClick="selectR(this.id)" value="3">
         </div>
 
       </fieldset>
@@ -146,7 +127,7 @@
                   out.println("<tr><td>" + points.get(i).getX() +
                           "</td><td>" + points.get(i).getY() +
                           "</td><td>" + points.get(i).getR() +
-                          "</td><td>" + (points.get(i).getCheckResult()) + "</td></tr>");
+                          "</td><td>" + points.get(i).getCheckString() + "</td></tr>");
               }
             %>
             </tbody>
