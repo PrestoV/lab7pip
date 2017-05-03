@@ -1,4 +1,5 @@
-<%@ page import="java.util.ArrayList,com.presto.lab7.Point" %>
+<%@ page import="java.util.ArrayList,com.presto.lab7.*" %>
+<%@ page import="com.presto.lab7.AreaCheckServlet" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
@@ -20,13 +21,14 @@
 <body onload="<%
               if (points != null) {
                 for(Point point : points){
-                  out.print("points.push(new Point("
-                  + point.getX() + ","
-                  + point.getY() + ","
-                  + point.getR() + ","
-                  + point.getCheckResult() +"));");
+                  if(point.getCheckResult() != null)
+                    out.print("points.push(new Point("
+                    + point.getXScaled() + ","
+                    + point.getYScaled() + ","
+                    + point.getR() + ","
+                    + point.getCheckResult() +"));");
                 }
-               out.print("selectR('" + "r" + points.get(points.size()-1).getR() + "');"); //TODO: REMOVE IT!!!
+                out.print("selectRValue('" + "r" + application.getAttribute(AreaCheckServlet.R_ATTRIBUTE) + "');");
               }
             %>plotDraw();">
 
@@ -84,11 +86,11 @@
           <label>R
             <label id="error-r" class="error"></label>
           </label>
-          <input type="button" name="value-r" id="r1" onClick="selectR(this.id)" value="1">
+          <input type="button" name="value-r" id="r1.0" onClick="selectR(this.id)" value="1">
           <input type="button" name="value-r" id="r1.5" onClick="selectR(this.id)" value="1.5">
-          <input type="button" name="value-r" id="r2" onClick="selectR(this.id)" value="2">
+          <input type="button" name="value-r" id="r2.0" onClick="selectR(this.id)" value="2">
           <input type="button" name="value-r" id="r2.5" onClick="selectR(this.id)" value="2.5">
-          <input type="button" name="value-r" id="r3" onClick="selectR(this.id)" value="3">
+          <input type="button" name="value-r" id="r3.0" onClick="selectR(this.id)" value="3">
         </div>
 
       </fieldset>

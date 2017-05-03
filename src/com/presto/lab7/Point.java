@@ -10,12 +10,18 @@ public class Point {
     private String y;
     private String r;
     private Boolean checkResult;
+    private Double rValue;
+    private Double xScaled;
+    private Double yScaled;
 
-    public Point(String x, String y, String r, Boolean checkResult) {
+    public Point(String x, String y, String r, Boolean checkResult, Double xScaled, Double yScaled, Double rValue) {
         this.x = x;
         this.y = y;
         this.r = r;
         this.checkResult = checkResult;
+        this.rValue = rValue;
+        this.xScaled = xScaled;
+        this.yScaled = yScaled;
     }
 
     public String getX() {
@@ -30,7 +36,7 @@ public class Point {
         return r;
     }
 
-    public boolean getCheckResult() {
+    public Boolean getCheckResult() {
         return checkResult;
     }
 
@@ -39,6 +45,29 @@ public class Point {
             return INCORRECT_PARAMS;
 
         return checkResult ? IN_AREA : NOT_IN_AREA;
+    }
+
+    public double getXScaled(){
+        return xScaled;
+    }
+
+    public double getYScaled(){
+        return yScaled;
+    }
+
+    public double getRValue(){
+        return rValue;
+    }
+
+    public void setScale(double scale){
+        if(xScaled != null && yScaled != null){
+            xScaled *= scale;
+            yScaled *= scale;
+        }
+    }
+
+    public void newCheckResult(Boolean checkResult){
+        this.checkResult = checkResult;
     }
 
 }

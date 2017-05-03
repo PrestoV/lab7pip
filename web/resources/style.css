@@ -124,7 +124,6 @@ input[name=value-r]
     width: 15%;
     float: left;
     margin-right: 10px;
-    transition: 0.3s;
 }
 
 input[name=value-y]
@@ -140,7 +139,6 @@ input[name=value-y]
     float: left;
     margin-right: 10px;
     margin-top: 10px;
-    transition: 0.3s;
 }
 
 input[name=check]

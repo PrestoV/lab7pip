@@ -28,6 +28,7 @@ function pointDraw(point) {
 
 function plotDraw() {
     var canvasContext = document.getElementById("plot").getContext("2d");
+    canvasContext.clearRect(0, 0, canvasContext.width, canvasContext.height);
 
     var image = new Image();
     image.src = "resources/area.png";
@@ -61,17 +62,36 @@ function plotClick(e) {
     sendRequest(x, y, valueR);
 }
 
-function selectR(clicked_id) {
+function selectRValue(clicked_id) {
     var buttonsR = document.getElementsByName("value-r");
+
     buttonsR.forEach(
         function (button, i, buttonsR) {
+            if(button.style.boxShadow !== ""){
+                oldR = button.value;
+            }
             if (button.id === clicked_id) {
                 button.style.boxShadow = "0 6px 8px 0 rgba(0,0,0,0.30)";
             }
-            else
+            else {
                 button.style.boxShadow = "";
+            }
         }
     );
+}
+
+function selectR(clicked_id) {
+    var valueR = document.getElementById(clicked_id).value;
+    var valueX = getValue(document.getElementsByName("value-x"), -3, 5,
+        (element) => true);
+    var valueY = getValue(document.getElementsByName("value-y"), -4, 4,
+        (element) => element.style.boxShadow !== "");
+
+    if(points.length > 0 && isNaN(valueX) && isNaN(valueY)){
+        sendRequest(null, null, valueR);
+    } else {
+        selectRValue(clicked_id);
+    }
 }
 
 function selectY(clicked_id) {
@@ -109,18 +129,23 @@ function checkValues() {
 
 function sendRequest(valueX, valueY, valueR) {
     var xhrequest = new XMLHttpRequest();
+    var query = "?";
 
-    xhrequest.open("GET", "?x=" + valueX + "&y=" + valueY + "&r=" + valueR, true);
+    if(valueX !== null)
+        query += "x=" + valueX;
+    if(valueY !== null)
+        query += "&y=" + valueY;
+    if(valueR !== null)
+        query += "&r=" + valueR;
+
+    xhrequest.open("GET", query, true);
     xhrequest.send();
 
     xhrequest.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            document.open();
-            document.write(this.responseText);
-            document.close();
+            location.reload();
         }
     }
-
 }
 
 function getValue(elements, lowerLimit, upperLimit, elementCheck) {
@@ -139,17 +164,5 @@ function getValue(elements, lowerLimit, upperLimit, elementCheck) {
 }
 
 function strip(number) {
-    var dot_pos = number.indexOf(".");
-
-    if (dot_pos === -1)
-        return number;
-
-    var len = number.length - dot_pos - 2;
-    dot_pos++;
-
-    while (len-- > 0 && number[dot_pos + 1] === "0") {
-        number = number.replace(".0", ".");
-    }
-
-    return number;
+    return number.replace(/[.]00+/, '.0');
 }
