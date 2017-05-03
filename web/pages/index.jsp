@@ -3,7 +3,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
-  ArrayList<Point> points = (ArrayList<Point>) application.getAttribute("checkedPoints");
+  ArrayList<Point> points = (ArrayList<Point>) application.getAttribute(AreaCheckServlet.POINTS_ATTRIBUTE);
 %>
 
 <html>
