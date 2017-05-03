@@ -1,7 +1,5 @@
 package com.presto.lab7;
 
-import com.presto.lab7.Point;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,9 +13,9 @@ import java.util.ArrayList;
 public class AreaCheckServlet extends HttpServlet {
     public final static String POINTS_ATTRIBUTE = "checkedPoints";
     public final static String R_ATTRIBUTE = "rValue";
-    public final static String X_PARAM = "x";
-    public final static String Y_PARAM = "y";
-    public final static String R_PARAM = "r";
+    private final static String X_PARAM = "x";
+    private final static String Y_PARAM = "y";
+    private final static String R_PARAM = "r";
 
     @Override
     public void service(HttpServletRequest req, HttpServletResponse res)
@@ -26,24 +24,26 @@ public class AreaCheckServlet extends HttpServlet {
         Double x = null;
         Double y = null;
         Double r;
+        Boolean checkResult;
         Double oldR;
 
         String xParam = req.getParameter(X_PARAM);
         String yParam = req.getParameter(Y_PARAM);
         String rParam = req.getParameter(R_PARAM);
-        Boolean checkResult;
+        r = Double.parseDouble( strip(rParam) );
 
         points = (ArrayList<Point>) getServletContext()
                 .getAttribute(POINTS_ATTRIBUTE);
         if(points == null) {
             points = new ArrayList<>();
         }
-        r = Double.parseDouble( strip(rParam) );
+
         oldR = (Double) getServletContext()
                 .getAttribute(R_ATTRIBUTE);
         if(oldR == null){
             oldR = r;
         }
+
         scalePoints(points, oldR, r);
         getServletContext().setAttribute(R_ATTRIBUTE, r);
 

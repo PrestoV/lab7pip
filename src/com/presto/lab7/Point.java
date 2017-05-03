@@ -2,9 +2,9 @@ package com.presto.lab7;
 
 
 public class Point {
-    public final static String IN_AREA = "да";
-    public final static String NOT_IN_AREA = "нет";
-    public final static String INCORRECT_PARAMS = "Неверные параметры!";
+    private final static String IN_AREA = "да";
+    private final static String NOT_IN_AREA = "нет";
+    private final static String INCORRECT_PARAMS = "Неверные параметры!";
 
     private String x;
     private String y;
@@ -14,7 +14,7 @@ public class Point {
     private Double xScaled;
     private Double yScaled;
 
-    public Point(String x, String y, String r, Boolean checkResult, Double xScaled, Double yScaled, Double rValue) {
+    Point(String x, String y, String r, Boolean checkResult, Double xScaled, Double yScaled, Double rValue) {
         this.x = x;
         this.y = y;
         this.r = r;
@@ -55,19 +55,18 @@ public class Point {
         return yScaled;
     }
 
-    public double getRValue(){
+    double getRValue(){
         return rValue;
     }
 
-    public void setScale(double scale){
+    void setScale(double scale){
         if(xScaled != null && yScaled != null){
             xScaled *= scale;
             yScaled *= scale;
         }
     }
 
-    public void newCheckResult(Boolean checkResult){
+    void newCheckResult(Boolean checkResult){
         this.checkResult = checkResult;
     }
-
 }
