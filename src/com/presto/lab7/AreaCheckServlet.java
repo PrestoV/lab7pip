@@ -35,7 +35,7 @@ public class AreaCheckServlet extends HttpServlet {
         points = (ArrayList<Point>) getServletContext()
                 .getAttribute(POINTS_ATTRIBUTE);
         if(points == null) {
-            points = new ArrayList<>();
+            points = new ArrayList<Point>();
         }
 
         oldR = (Double) getServletContext()
@@ -58,7 +58,9 @@ public class AreaCheckServlet extends HttpServlet {
                     throw new NumberFormatException();
 
                 checkResult = pointCheck(x, y, r);
-            } catch(NumberFormatException|NullPointerException e) {
+            } catch(NumberFormatException e) {
+                checkResult = null;
+            } catch(NullPointerException e){
                 checkResult = null;
             }
 
